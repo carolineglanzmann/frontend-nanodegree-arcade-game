@@ -7,7 +7,7 @@ var Enemy = function(x,y, speed) {
     // a helper we've provided to easily load images
     this.x = x;
     this.y = y;
-    this.speed = Math.random() * x + y;
+    this.speed = Math.floor(Math.random() * x + y);
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -39,7 +39,7 @@ Enemy.prototype.render = function() {
 // a handleInput() method.
 var Player = function() {
     // initial position set up for player
-    this.x = 120;
+    this.x = 200;
     this.y = 400;
     this.sprite = 'images/char-boy.png';
 
@@ -56,7 +56,49 @@ Player.prototype.render = function(){
 };
 
 Player.prototype.handleInput = function(allowedKeys){
+    switch(allowedKeys) {
+        case 'left' :
+        if(this.x - 101 < 0) {
+            this.x = 0;
+        }
 
+        else{
+            this.x -= 101;
+        }
+        break;
+
+        case 'right' :
+        if(this.x + 101 >= 404) {
+            this.x = 404;
+        }
+
+        else{
+            this.x += 101;
+        }
+        break;
+
+        case 'up' :
+        if(this.y - 95 < 0) {
+            this.y = 0;
+        }
+        else{
+            this.y -= 95;
+        }
+
+        break;
+
+        case 'down':
+        if(this.y + 95 >= 404){
+            this.y = 404;
+        }
+
+        else{
+            this.y += 95;
+        }
+        break;
+       
+
+    }
 };
 
 // Now instantiate your objects.
