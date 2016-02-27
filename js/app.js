@@ -50,7 +50,7 @@ var resetGame = function(){
 }
 
 Player.prototype.update = function(dt) {
-
+    this.enemyCollision();
 };
 
 
@@ -107,7 +107,23 @@ Player.prototype.handleInput = function(allowedKeys){
 
 // Added the function that handles the player collison with the enemy bugs
 Player.prototype.enemyCollision = function (){
+    var ladyBug = checkCollisions(allEnemies);
 
+    if(ladyBug){
+        resetGame();
+    }
+
+};
+
+var checkCollisions = function(enemyArray){
+    for (var i = 0; i < enemyArray.length; i++ ){
+        if(player.x < enemyArray[i].x + 50 &&
+            player.x + 50 > enemyArray[i].x &&
+            player.y < enemyArray[i].y + 40 &&
+            player.y + 40 > enemyArray[i].y){
+                return enemyArray[i];
+        }
+    }
 };
 
 
