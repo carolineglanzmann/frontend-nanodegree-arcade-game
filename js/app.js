@@ -1,4 +1,6 @@
 // Enemies our player must avoid
+var water = false;
+
 var Enemy = function(x,y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -51,6 +53,9 @@ var resetGame = function(){
 
 Player.prototype.update = function(dt) {
     this.enemyCollision();
+    this.reachingWater();
+
+    
 };
 
 
@@ -84,6 +89,7 @@ Player.prototype.handleInput = function(allowedKeys){
         case 'up' :
         if(this.y - 90 < 0) {
             this.y = 0;
+            water = true;
         }
         else{
             this.y -= 90;
@@ -105,7 +111,7 @@ Player.prototype.handleInput = function(allowedKeys){
     }
 };
 
-// Added the function that handles the player collison with the enemy bugs
+// Set up collision when player interact with ladybug, thus reseting the game
 Player.prototype.enemyCollision = function (){
     var ladyBug = checkCollisions(allEnemies);
 
@@ -115,6 +121,15 @@ Player.prototype.enemyCollision = function (){
 
 };
 
+// Added the function that brings player back to grass once reached the water
+Player.prototype.reachingWater = function(){
+    if(water){
+        setTimeout(resetGame, 500);
+        water = false; // meaning player back to the grass (original state)
+    }
+};
+
+// Create a function that returns the enemyArray to check for collisions
 var checkCollisions = function(enemyArray){
     for (var i = 0; i < enemyArray.length; i++ ){
         if(player.x < enemyArray[i].x + 50 &&
