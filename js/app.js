@@ -47,12 +47,6 @@ var Player = function() {
 
 };
 
-// Reset Game function
-var resetGame = function(){
-    player.x = 200;
-    player.y = 400;
-
-};
 
 // Update the status of player throughout the gameplay
 Player.prototype.update = function(dt) {
@@ -62,11 +56,13 @@ Player.prototype.update = function(dt) {
 
     // when player reaches water (game win)
     if (player.y === 0) {
-      this.gameWon();
+        this.hideText(); // method use to alternate gameWon and gameOver methods on screen
+        this.gameWon(); // show gameWon on screen 
+      
     }
 };
 
-// Show text on screen for user lives and score
+// Show initial text on screen for player lives and score
 Player.prototype.showText = function() {
     ctx.clearRect(0,0,80,200);
     ctx.clearRect(400,0,80,200); 
@@ -113,12 +109,12 @@ Player.prototype.handleInput = function(inputKeys){
         break;
 
         case 'up' :
-        if(this.y - 90 < 0) {
+        if(this.y - 85 < 0) {
             this.y = 0;
             water = true;
         }
         else{
-            this.y -= 90;
+            this.y -= 85;
         }
 
         break;
@@ -139,7 +135,7 @@ Player.prototype.handleInput = function(inputKeys){
 
 
 // Added text feedback when the game is over
-// And player lost all his lives
+// After player loses all his lives
 Player.prototype.gameOver = function () {
     
     ctx.fillStyle = 'red';
@@ -150,7 +146,7 @@ Player.prototype.gameOver = function () {
 
 };
 
-// Added user feedback when the game is won
+// Added text feedback when the game is won
 Player.prototype.gameWon = function(){
   
     ctx.fillStyle = 'green';
@@ -160,18 +156,28 @@ Player.prototype.gameWon = function(){
     ctx.strokeText("YOU WON", 210, 35);
 };
 
+// Added text to hide game status (gameWon and/or gameOver functions on the screen)
+Player.prototype.hideText = function(){
+    ctx.fillStyle = 'white';
+    ctx.rect(170, 10 , 150, 100);
+    ctx.fill();
+};
+
 // Set up collision when player interact with ladybug, thus reseting the game
 Player.prototype.enemyCollision = function (){
     var ladyBug = checkCollisions(allEnemies);
 
     if(ladyBug){
-        if(this.lives !== 0){
-            this.lives--;
-            resetGame(); // reset game and lose a life 
+        if(this.lives !== 1){
+            this.lives--;   // player loses life
+            resetPlayer(); // player goes back to initial position 
         }
 
         else {
+            this.lives--;
+            this.hideText(); // method to alternate gameWon and gameOver methods
             this.gameOver(); // gameover text appears on screen
+            resetPlayer(); // player goes back to initial position
         }
         
     }
@@ -181,24 +187,12 @@ Player.prototype.enemyCollision = function (){
 // Added the function that brings player back to grass once reached the water
 Player.prototype.reachingWater = function(){
     if(water){
-        setTimeout(resetGame, 700);
+        setTimeout(resetPlayer, 700);
         water = false; // meaning player back to the grass (original state)
     }
 };
 
-// Create a function that returns the enemyArray/ starsArray to check 
-// for collisions/collection when the function is called on the 
-// Enemy and Star instances respectivelly
-var checkCollisions = function(someArray){
-    for (var i = 0; i < someArray.length; i++ ){
-        if(player.x < someArray[i].x + 50 &&
-            player.x + 50 > someArray[i].x &&
-            player.y < someArray[i].y + 40 &&
-            player.y + 40 > someArray[i].y){
-                return someArray[i];
-        }
-    }
-};
+
 
 // Stars - object for player to collect during game
 var Star = function(){   
@@ -233,6 +227,30 @@ Star.prototype.collectStars = function(){
 
 };
 
+
+// This section I declared extra global functions
+// Reset Player function
+var resetPlayer = function(){
+    player.x = 200;
+    player.y = 400;
+
+};
+
+// Create a function that returns the enemyArray/ starsArray to check 
+// for collisions/collection when the function is called on the 
+// Enemy and Star instances respectivelly
+var checkCollisions = function(someArray){
+    for (var i = 0; i < someArray.length; i++ ){
+        if(player.x < someArray[i].x + 50 &&
+            player.x + 50 > someArray[i].x &&
+            player.y < someArray[i].y + 40 &&
+            player.y + 40 > someArray[i].y){
+                return someArray[i];
+        }
+    }
+};
+
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [new Enemy(90,50), new Enemy(75,224), new Enemy(154,139)];
@@ -241,7 +259,7 @@ var allEnemies = [new Enemy(90,50), new Enemy(75,224), new Enemy(154,139)];
 var player = new Player();
 
 
-// Instanciate the Star array object for player to collect
+// Instanciate the Star array object for player to collect points
 var allStars = [];
 for (var i = 0; i < 4; i++){
     var star =  new Star();
