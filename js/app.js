@@ -51,13 +51,20 @@ var Player = function() {
 var resetGame = function(){
     player.x = 200;
     player.y = 400;
+
 }
 
 //Update the status of player throughout the gameplay
 Player.prototype.update = function(dt) {
-    this.enemyCollision();
     this.reachingWater();
+
+    this.enemyCollision();
     this.showText();
+
+    if (this.y === 0) {
+        this.gameWon();
+    }
+
 
 
 };
@@ -79,6 +86,7 @@ Player.prototype.showText = function() {
     ctx.strokeText("Lives: " + this.lives, 420, 35);
 
 };
+
 
 // Draw the player on the screen
 Player.prototype.render = function(){
@@ -135,6 +143,29 @@ Player.prototype.handleInput = function(inputKeys){
 
 
 
+// Added text feedback when the game is over
+// And player lost all his lives
+Player.prototype.gameOver = function () {
+    ctx.fillStyle = 'red';
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1.5;
+    ctx.fillText("GAME OVER", 210, 35);
+    ctx.strokeText("GAME OVER", 210, 35);
+
+};
+
+// Added user feedback when the game is won
+Player.prototype.gameWon = function(){
+  
+    ctx.fillStyle = 'green';
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1.5;
+    ctx.fillText("YOU WON", 210, 35);
+    ctx.strokeText("YOU WON", 210, 35);
+};
+
+
+
 // Set up collision when player interact with ladybug, thus reseting the game
 Player.prototype.enemyCollision = function (){
     var ladyBug = checkCollisions(allEnemies);
@@ -142,10 +173,14 @@ Player.prototype.enemyCollision = function (){
     if(ladyBug){
         if(this.lives !== 0){
             this.lives--;
-            resetGame();
-
+            resetGame(); // reset game and lose a life 
         }
 
+        else {
+            this.gameOver(); // gameover text appears on screen
+        }
+
+        
     }
 
 };
@@ -153,7 +188,7 @@ Player.prototype.enemyCollision = function (){
 // Added the function that brings player back to grass once reached the water
 Player.prototype.reachingWater = function(){
     if(water){
-        setTimeout(resetGame, 500);
+        setTimeout(resetGame, 1000);
         water = false; // meaning player back to the grass (original state)
     }
 };
@@ -186,6 +221,12 @@ Star.prototype.render = function(){
 
 };
 
+// Update of Star collection 
+Star.prototype.update = function(){
+    this.collectStars();
+
+};
+
 // Set up for Collecting Stars/Points 
 Star.prototype.collectStars = function(){
     var collectables = checkCollisions(allStars);
@@ -195,13 +236,11 @@ Star.prototype.collectStars = function(){
         allStars.splice(index, 1);
         player.score += 5; // Add 5 points for every star collected
     }
-};
 
-// Update of Star collection 
-Star.prototype.update = function(){
-    this.collectStars();
 
 };
+
+
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
