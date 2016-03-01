@@ -1,5 +1,5 @@
  // Enemies our player must avoid
-var water = false; // set initial player to the grass point (equals to not be in water)
+var water = false; // set initial player to the grass point
 
 var Enemy = function(x,y) {
     // Variables applied to each of our instances go here,
@@ -9,7 +9,7 @@ var Enemy = function(x,y) {
     // a helper we've provided to easily load images
     this.x = x;
     this.y = y;
-    this.speed = Math.floor(Math.random() * x + y);
+    this.speed = Math.floor(Math.random() * x + y); // set a random speed value for enemy object
     this.sprite = 'images/enemy-bug.png';
 };
 
@@ -23,7 +23,7 @@ Enemy.prototype.update = function(dt) {
         this.x = this.x + this.speed * dt;
     }
 
-    else{
+    else {
         this.x = 0;
     }
       
@@ -47,33 +47,29 @@ var Player = function() {
 
 };
 
-//Reset Game function
+// Reset Game function
 var resetGame = function(){
     player.x = 200;
     player.y = 400;
 
-}
-
-//Update the status of player throughout the gameplay
-Player.prototype.update = function(dt) {
-    this.reachingWater();
-
-    this.enemyCollision();
-    this.showText();
-
-    if (this.y === 0) {
-        this.gameWon();
-    }
-
-
-
 };
 
-//Show text on screen for user lives and score
+// Update the status of player throughout the gameplay
+Player.prototype.update = function(dt) {
+    this.reachingWater(); 
+    this.enemyCollision(); // call the enemy collision
+    this.showText(); // show scores and lives text on the screen 
+
+    // when player reaches water (game win)
+    if (player.y === 0) {
+      this.gameWon();
+    }
+};
+
+// Show text on screen for user lives and score
 Player.prototype.showText = function() {
     ctx.clearRect(0,0,80,200);
-    ctx.clearRect(400,0,80,200);
-   
+    ctx.clearRect(400,0,80,200); 
 
     ctx.font = " 20px Impact";
     ctx.fillStyle = "orange";
@@ -142,10 +138,10 @@ Player.prototype.handleInput = function(inputKeys){
 };
 
 
-
 // Added text feedback when the game is over
 // And player lost all his lives
 Player.prototype.gameOver = function () {
+    
     ctx.fillStyle = 'red';
     ctx.strokeStyle = "black";
     ctx.lineWidth = 1.5;
@@ -164,8 +160,6 @@ Player.prototype.gameWon = function(){
     ctx.strokeText("YOU WON", 210, 35);
 };
 
-
-
 // Set up collision when player interact with ladybug, thus reseting the game
 Player.prototype.enemyCollision = function (){
     var ladyBug = checkCollisions(allEnemies);
@@ -179,7 +173,6 @@ Player.prototype.enemyCollision = function (){
         else {
             this.gameOver(); // gameover text appears on screen
         }
-
         
     }
 
@@ -188,14 +181,14 @@ Player.prototype.enemyCollision = function (){
 // Added the function that brings player back to grass once reached the water
 Player.prototype.reachingWater = function(){
     if(water){
-        setTimeout(resetGame, 1000);
+        setTimeout(resetGame, 700);
         water = false; // meaning player back to the grass (original state)
     }
 };
 
 // Create a function that returns the enemyArray/ starsArray to check 
-//for collisions/collection when the function is called on the 
-//Enemy and Star instances respectivelly
+// for collisions/collection when the function is called on the 
+// Enemy and Star instances respectivelly
 var checkCollisions = function(someArray){
     for (var i = 0; i < someArray.length; i++ ){
         if(player.x < someArray[i].x + 50 &&
@@ -240,8 +233,6 @@ Star.prototype.collectStars = function(){
 
 };
 
-
-
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [new Enemy(90,50), new Enemy(75,224), new Enemy(154,139)];
@@ -250,7 +241,7 @@ var allEnemies = [new Enemy(90,50), new Enemy(75,224), new Enemy(154,139)];
 var player = new Player();
 
 
-// Instanciate the Star objects for player to collect
+// Instanciate the Star array object for player to collect
 var allStars = [];
 for (var i = 0; i < 4; i++){
     var star =  new Star();
