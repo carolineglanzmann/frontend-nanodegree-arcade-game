@@ -96,6 +96,7 @@ var Engine = (function(global) {
         });
         player.update();
 
+        // Set the update function to the Star object
         allStars.forEach(function(star){
             star.update();
         });
@@ -158,6 +159,7 @@ var Engine = (function(global) {
 
         player.render();
 
+        // Set the render function to the Star object
         allStars.forEach(function(star) {
             star.render();
         });
