@@ -6,7 +6,7 @@ Students should use this [rubric](https://www.udacity.com/course/viewer/#!/c-nd0
 For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
 
 
-# My Frogger Game
+# My Frogger Game Mechanics
 This are the basic instructions on how to play the frogger game.
 You start the game with 5 lives and an empty score base point.
 
@@ -24,3 +24,7 @@ arrow keys on your keyboard to move him to the
 left/top/right/bottom sides of the screen respectively.
 
 ```
+## Running Instructions
+This section talks about how to open up the game on your browser
+
+* Open up the index.html file in your choice of browser and start playing
