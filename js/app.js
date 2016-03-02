@@ -50,15 +50,13 @@ var Player = function() {
 
 // Update the status of player throughout the gameplay
 Player.prototype.update = function(dt) {
-    this.reachingWater(); 
     this.enemyCollision(); // call the enemy collision
     this.showText(); // show scores and lives text on the screen 
-
     // when player reaches water (game win)
-    if (player.y === 0) {
+    if (this.y === 0) {
         this.hideText(); // method use to alternate gameWon and gameOver methods on screen
-        this.gameWon(); // show gameWon on screen 
-      
+        this.gameWon(); // show gameWon on screen
+        this.reachingWater();
     }
 };
 
@@ -170,14 +168,14 @@ Player.prototype.enemyCollision = function (){
     if(ladyBug){
         if(this.lives !== 1){
             this.lives--;   // player loses life
-            resetPlayer(); // player goes back to initial position 
+            this.resetPlayer(); // player goes back to initial position 
         }
 
         else {
             this.lives--;
             this.hideText(); // method to alternate gameWon and gameOver methods
             this.gameOver(); // gameover text appears on screen
-            resetPlayer(); // player goes back to initial position
+            this.resetPlayer(); // player goes back to initial position
         }
         
     }
@@ -187,12 +185,17 @@ Player.prototype.enemyCollision = function (){
 // Added the function that brings player back to grass once reached the water
 Player.prototype.reachingWater = function(){
     if(water){
-        setTimeout(resetPlayer, 700);
+        setTimeout(this.resetPlayer, 700);
         water = false; // meaning player back to the grass (original state)
     }
 };
 
+// Reset Player to the grass 
+Player.prototype.resetPlayer = function(){
+    player.x = 200;
+    player.y = 400;
 
+};
 
 // Stars - object for player to collect during game
 var Star = function(){   
@@ -228,29 +231,6 @@ Star.prototype.collectStars = function(){
 };
 
 
-// This section I declared extra global functions
-// Reset Player function
-var resetPlayer = function(){
-    player.x = 200;
-    player.y = 400;
-
-};
-
-// Create a function that returns the enemyArray/ starsArray to check 
-// for collisions/collection when the function is called on the 
-// Enemy and Star instances respectivelly
-var checkCollisions = function(someArray){
-    for (var i = 0; i < someArray.length; i++ ){
-        if(player.x < someArray[i].x + 50 &&
-            player.x + 50 > someArray[i].x &&
-            player.y < someArray[i].y + 40 &&
-            player.y + 40 > someArray[i].y){
-                return someArray[i];
-        }
-    }
-};
-
-
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [new Enemy(90,50), new Enemy(75,224), new Enemy(154,139)];
@@ -265,6 +245,21 @@ for (var i = 0; i < 4; i++){
     var star =  new Star();
     allStars.push(star);
 }
+
+// Create a function that returns the enemyArray/ starsArray to check 
+// for collisions/collection when the function is called on the 
+// Enemy and Star instances respectivelly
+
+var checkCollisions = function(someArray){
+    for (var i = 0; i < someArray.length; i++ ){
+        if(player.x < someArray[i].x + 50 &&
+            player.x + 50 > someArray[i].x &&
+            player.y < someArray[i].y + 40 &&
+            player.y + 40 > someArray[i].y){
+                return someArray[i];
+        }
+    }
+};
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
