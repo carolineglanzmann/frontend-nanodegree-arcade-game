@@ -163,7 +163,7 @@ Player.prototype.hideText = function(){
 
 // Set up collision when player interact with ladybug, thus reseting the game
 Player.prototype.enemyCollision = function (){
-    var ladyBug = checkCollisions(allEnemies);
+    var ladyBug = this.checkCollisions(allEnemies);
 
     if(ladyBug){
         if(this.lives !== 1){
@@ -192,18 +192,36 @@ Player.prototype.reachingWater = function(){
 
 // Reset Player to the grass 
 Player.prototype.resetPlayer = function(){
-    player.x = 200;
-    player.y = 400;
+    this.x = 200;
+    this.y = 400;
 
 };
 
+Player.prototype.checkCollisions = function(someArray){
+    for (var i = 0; i < someArray.length; i++ ){
+        if(this.x < someArray[i].x + 50 &&
+            this.x + 50 > someArray[i].x &&
+            this.y < someArray[i].y + 40 &&
+            this.y + 40 > someArray[i].y){
+                return someArray[i];
+        }
+    }
+
+  
+};
 // Stars - object for player to collect during game
-var Star = function(){   
+var Star = function(){ 
+
+    Player.call(this);  
     this.sprite = 'images/Star.png';
     this.x = Math.floor(Math.random() * (7 - 1) + 1) * 101;
     this.y = Math.floor(Math.random () * ( 3 - 1) + 1) * 80;
 
+
+
 };
+
+Star.prototype = Object.create(Player.prototype);
 
 // Draw the stars on the screen
 Star.prototype.render = function(){
@@ -213,13 +231,15 @@ Star.prototype.render = function(){
 
 // Update of Star collection 
 Star.prototype.update = function(){
-    this.collectStars();
+    this.checkCollisions(allStars);
 
 };
 
 // Set up for Collecting Stars/Points 
-Star.prototype.collectStars = function(){
-    var collectables = checkCollisions(allStars);
+Star.prototype.checkCollisions = function(){
+    
+
+    var collectables = this.checkCollisions(allStars);
     var index = allStars.indexOf(collectables);
 
     if(index > -1) {
@@ -246,20 +266,7 @@ for (var i = 0; i < 4; i++){
     allStars.push(star);
 }
 
-// Create a function that returns the enemyArray/ starsArray to check 
-// for collisions/collection when the function is called on the 
-// Enemy and Star instances respectivelly
 
-var checkCollisions = function(someArray){
-    for (var i = 0; i < someArray.length; i++ ){
-        if(player.x < someArray[i].x + 50 &&
-            player.x + 50 > someArray[i].x &&
-            player.y < someArray[i].y + 40 &&
-            player.y + 40 > someArray[i].y){
-                return someArray[i];
-        }
-    }
-};
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
